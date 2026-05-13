@@ -1,0 +1,77 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <title>Análisis Algorítmico - Ingeniería</title>
+    <link rel="stylesheet" href="estils.css">
+</head>
+<body>
+
+    <div class="contenedor">
+        <h1>Análisis de Eficiencia Algorítmica</h1>
+        
+        <div class="ficha-tecnica">
+            <h3>Memoria del Ejercicio</h3>
+            <p>Comparación de complejidad temporal entre la división exacta (Binaria) y la proporción áurea (Fibonacci).</p>
+        </div>
+
+        <div id="pantalla">
+            <p class="espera">Esperando ejecución de algoritmos...</p>
+        </div>
+    </div>
+
+    <script>
+        // LÓGICA IDÉNTICA A OCTAVE
+        var n = parseInt(prompt("Ingrese el tamaño del arreglo (N):"));
+        var objetivo = parseInt(prompt("Ingrese el valor a buscar:"));
+
+        if (!isNaN(n) && !isNaN(objetivo)) {
+            var datos = [];
+            for (var j = 1; j <= n; j++) datos.push(j);
+
+            // --- BÚSQUEDA BINARIA ---
+            var bajo = 1, alto = n, pasosBin = 0, posBin = -1;
+            while (bajo <= alto) {
+                pasosBin++;
+                var medio = Math.floor((bajo + alto) / 2);
+                if (datos[medio - 1] === objetivo) { posBin = medio; break; }
+                else if (datos[medio - 1] < objetivo) { bajo = medio + 1; }
+                else { alto = medio - 1; }
+            }
+
+            // --- BÚSQUEDA FIBONACCI ---
+            var f2 = 0, f1 = 1, fm = f1 + f2;
+            while (fm < n) { f2 = f1; f1 = fm; fm = f1 + f2; }
+            var offset = 0, pasosFib = 0, posFib = -1;
+            while (fm > 1) {
+                pasosFib++;
+                var i = Math.min(offset + f2, n);
+                if (i <= 0) i = 1;
+                if (datos[i - 1] < objetivo) {
+                    fm = f1; f1 = f2; f2 = fm - f1; offset = i;
+                } else if (datos[i - 1] > objetivo) {
+                    fm = f2; f1 = f1 - f2; f2 = fm - f1;
+                } else { posFib = i; break; }
+            }
+
+            // PRESENTACIÓN MEJORADA
+            var divRes = document.getElementById("pantalla");
+            divRes.innerHTML = `
+                <div class="grid-resultados">
+                    <div class="tarjeta binaria">
+                        <h4>Búsqueda Binaria</h4>
+                        <div class="dato">Posición: <span>${posBin}</span></div>
+                        <div class="dato">Iteraciones: <span>${pasosBin}</span></div>
+                    </div>
+                    <div class="tarjeta fibonacci">
+                        <h4>Búsqueda Fibonacci</h4>
+                        <div class="dato">Posición: <span>${posFib}</span></div>
+                        <div class="dato">Iteraciones: <span>${pasosFib}</span></div>
+                    </div>
+                </div>
+                <div class="footer-res">Búsqueda finalizada para N = ${n}</div>
+            `;
+        }
+    </script>
+</body>
+</html>
